@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="長照模擬考">
+    <title>長照指導員技術考試 — iPhone 17 Pro 模擬測驗</title>
+
+    <!-- Tailwind CSS (CDN for standalone single-file usage) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        /* iPhone Dynamic Island & Safe Area Support */
+        body {
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            -webkit-tap-highlight-color: transparent;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        /* Custom scrollbar for mobile sleekness */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between select-none">
+
+    <!-- Top Header Navigation -->
+    <header class="bg-blue-700 text-white px-4 py-3 shadow-md sticky top-0 z-50 flex justify-between items-center">
+        <div>
+            <h1 class="text-base font-bold tracking-wide">長照指導技術 — 考前模擬小工具</h1>
+            <p class="text-xs text-blue-200">專為 iPhone 17 Pro 打造 ｜ 應考人：小峻</p>
+        </div>
+        <button id="btn-home" class="bg-blue-800 hover:bg-blue-900 text-xs px-3 py-1.5 rounded-lg border border-blue-400 font-medium transition">
+            🏠 首頁
+        </button>
+    </header>
+
+    <!-- Main Container Area -->
+    <main class="flex-1 p-4 max-w-md mx-auto w-full">
+
+        <!-- SCREEN 1: Home Mode Selection -->
+        <div id="screen-home" class="space-y-4">
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-base font-bold text-slate-800 mb-1">🎯 考前衝刺練習</h2>
+                <p class="text-xs text-slate-500 mb-3">請選擇練習模式。建議先進行全 SOP 複習，再進行 12 分鐘實戰模擬。</p>
+                <div class="grid grid-cols-1 gap-2.5">
+                    <button onclick="startExam('scenarioA')" class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-3.5 rounded-xl shadow-sm text-left flex justify-between items-center active:scale-95 transition">
+                        <div>
+                            <div class="font-bold text-sm">👵 情境 A 實戰模擬 (12分鐘)</div>
+                            <div class="text-xs text-blue-100 mt-0.5">陳奶奶（失智症/腎臟病；鼻胃管/導尿管）</div>
+                        </div>
+                        <span class="text-lg">⏱️</span>
+                    </button>
+
+                    <button onclick="startExam('scenarioB')" class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white p-3.5 rounded-xl shadow-sm text-left flex justify-between items-center active:scale-95 transition">
+                        <div>
+                            <div class="font-bold text-sm">👴 情境 B 實戰模擬 (12分鐘)</div>
+                            <div class="text-xs text-emerald-100 mt-0.5">王爺爺（胃癌化療/右側偏癱；鼻胃管/導尿管）</div>
+                        </div>
+                        <span class="text-lg">⏱️</span>
+                    </button>
+
+                    <button onclick="startExam('random')" class="bg-gradient-to-r from-purple-600 to-pink-600 text-white p-3.5 rounded-xl shadow-sm text-left flex justify-between items-center active:scale-95 transition">
+                        <div>
+                            <div class="font-bold text-sm">🎲 隨機抽題速測 (無時間限制)</div>
+                            <div class="text-xs text-purple-100 mt-0.5">隨機抽取 3 項核心護理技術快速演練</div>
+                        </div>
+                        <span class="text-lg">⚡</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Quick Read Cards -->
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <h2 class="text-sm font-bold text-slate-800 mb-2">📚 導尿管男女對照快查</h2>
+                <div class="space-y-2 text-xs">
+                    <div class="bg-pink-50 p-2.5 rounded-lg border border-pink-200">
+                        <span class="font-bold text-pink-700">👩 女性（陳奶奶）:</span> 屈膝仰臥、分開大陰唇、由上往下單向擦拭、固定於大腿內側 upper 1/3。
+                    </div>
+                    <div class="bg-blue-50 p-2.5 rounded-lg border border-blue-200">
+                        <span class="font-bold text-blue-700">👨 男性（王爺爺）:</span> 平躺仰臥、退開包皮、環狀擦拭龜頭、<span class="font-bold text-red-600">包皮務必復位</span>、固定於下腹部/大腿前側。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCREEN 2: Exam / Interactive Checklist -->
+        <div id="screen-exam" class="hidden space-y-4">
+            
+            <!-- Sticky Timer Bar -->
+            <div id="timer-card" class="bg-slate-900 text-white p-3 rounded-xl shadow-md flex justify-between items-center sticky top-14 z-40">
+                <div>
+                    <div class="text-xs text-slate-400">目前應考情境</div>
+                    <div id="exam-title" class="font-bold text-sm text-amber-400">情境 A 模擬考</div>
+                </div>
+                <div class="text-right">
+                    <div class="text-xs text-slate-400">剩餘時間</div>
+                    <div id="timer-display" class="font-mono font-bold text-xl text-emerald-400">12:00</div>
+                </div>
+            </div>
+
+            <!-- Question & Checklists Container -->
+            <div id="questions-container" class="space-y-4">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Submit Button -->
+            <button onclick="finishExam()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3.5 rounded-xl shadow-lg active:scale-95 transition text-base">
+                ✅ 完成技術抽考與自評送出
+            </button>
+        </div>
+
+        <!-- SCREEN 3: Result & Score Report -->
+        <div id="screen-result" class="hidden space-y-4">
+            <div class="bg-white p-5 rounded-xl shadow-md text-center border border-slate-200">
+                <div class="text-xs text-slate-500 font-bold tracking-wider uppercase mb-1">本次演練評分報告</div>
+                <div id="score-text" class="text-4xl font-extrabold text-blue-700 mb-1">85 分</div>
+                <div id="score-status" class="text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full inline-block mb-3">恭喜高分通過核備！</div>
+                
+                <div class="grid grid-cols-2 gap-2 text-left text-xs bg-slate-50 p-3 rounded-lg border border-slate-200">
+                    <div>完成項目：<span id="res-completed" class="font-bold text-slate-800">12 / 15</span></div>
+                    <div>耗費時間：<span id="res-time" class="font-bold text-slate-800">08 分 45 秒</span></div>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                <h3 class="text-sm font-bold text-slate-800 mb-2">⚠️ 漏掉的標準 SOP 步驟（重點複習）</h3>
+                <div id="missed-items-list" class="space-y-2 text-xs text-slate-600">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+
+            <button onclick="showScreen('home')" class="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 rounded-xl shadow-md active:scale-95 transition">
+                🔄 重新練習 / 選擇其他情境
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Bottom Navigation Footer -->
+    <footer class="text-center py-3 text-xs text-slate-400 border-t border-slate-200 bg-white">
+        小峻考前獨家小工具 ｜ iPhone 17 Pro 優化版
+    </footer>
+
+    <!-- Interactive Logic JavaScript -->
+    <script>
+        // Full Question Bank & Technical SOP Checklist Data
+        const sopData = {
+            glycerin: {
+                title: "甘油球通便術 (情境 A)",
+                steps: [
+                    { id: "g1", text: "洗手、核對身分、向陳奶奶及女兒說明目的與步驟。" },
+                    { id: "g2", text: "拉圍簾保護隱私，協助採【左側臥位】雙腿屈曲。" },
+                    { id: "g3", text: "【關鍵】臀部下方鋪上【看護墊】。" },
+                    { id: "g4", text: "【關鍵】戴上【清潔手套】。" },
+                    { id: "g5", text: "甘油球頂端剪開並檢查【切口平滑無毛刺】，塗抹潤滑劑。" },
+                    { id: "g6", text: "請個案深呼吸放鬆，緩慢插入肛門約 3–4 公分。" },
+                    { id: "g7", text: "緩慢擠壓注入藥液，【維持擠壓狀態下拔出甘油球】（防止藥液吸回）。" },
+                    { id: "g8", text: "衛生紙按壓肛門，叮嚀盡量【忍耐 5–10 分鐘】再排便。" },
+                    { id: "g9", text: "脫手套、撤看護墊、協助穿褲、洗手並紀錄。" }
+                ],
+                speech: "指導講評：幫奶奶灌甘油球一定要記得先墊看護墊、戴手套，擠完一定要『捏著拔出來』，才可以放開喔！"
+            },
+            foleycathF: {
+                title: "導尿管護理與固定 (女性 - 陳奶奶)",
+                steps: [
+                    { id: "ff1", text: "洗手、向個案及女兒說明，拉圍簾，採【屈膝仰臥位】。" },
+                    { id: "ff2", text: "臀下鋪【看護墊】，戴上【清潔手套】。" },
+                    { id: "ff3", text: "一手大拇指與食指【分開大陰唇】。" },
+                    { id: "ff4", text: "棉棒由上往下（尿道口→陰道口→肛門）單向擦拭，一枝擦一次。" },
+                    { id: "ff5", text: "由尿道口沿管路【向外旋轉擦拭 10–15 公分】。" },
+                    { id: "ff6", text: "固定於【大腿內側 upper 1/3 處】，井字貼法預留備用長度。" },
+                    { id: "ff7", text: "確認尿管不扭曲，尿袋保持低於膀胱（不接地）。" }
+                ],
+                speech: "指導講評：女性擦拭方向一定要『由上往下』單向擦，固定要在『大腿內側上 1/3』，預留活動長度。"
+            },
+            foleycathM: {
+                title: "導尿管護理與固定 (男性 - 王爺爺)",
+                steps: [
+                    { id: "fm1", text: "洗手、向個案及兒子說明，拉圍簾，採平躺仰臥位。" },
+                    { id: "fm2", text: "臀下鋪【看護墊】，戴上【清潔手套】。" },
+                    { id: "fm3", text: "一手將【包皮退開】，露出龜頭與尿道口。" },
+                    { id: "fm4", text: "棉棒由尿道口向外【環狀/圓周旋轉擦拭】清潔龜頭與冠狀溝。" },
+                    { id: "fm5", text: "沿管路向外旋轉擦拭 10–15 公分。" },
+                    { id: "fm6", text: "【絕對關鍵】清潔後務必將【包皮推回復位】（防止水腫壞死）。" },
+                    { id: "fm7", text: "固定於【下腹部】或大腿前側，井字貼法預留備用長度。" }
+                ],
+                speech: "指導講評：男爺爺清完導尿管，『包皮一定要記得推回去』！固定位置要在下腹部或大腿前側。"
+            },
+            perineal: {
+                title: "會陰沖洗術",
+                steps: [
+                    { id: "p1", text: "洗手、說明、拉圍簾。裝 38–40°C 溫水，用【手腕內側試水溫】。" },
+                    { id: "p2", text: "採屈膝仰臥位，臀下鋪【看護墊】並放置【便盆】。" },
+                    { id: "p3", text: "戴上【清潔手套】。" },
+                    { id: "p4", text: "持沖洗壺由上往下沖洗，棉棒由上而下、由內而外單向擦拭。" },
+                    { id: "p5", text: "擦乾會陰，撤便盆與看護墊，脫手套，洗手紀錄。" }
+                ],
+                speech: "指導講評：沖洗水溫要先用手腕試溫，棉棒一枝只能擦一次，絕不能來回擦。"
+            },
+            ngFeed: {
+                title: "協助管灌餵食 (鼻胃管灌食)",
+                steps: [
+                    { id: "nf1", text: "洗手、說明，協助採坐起或抬高床頭 【30–45 度】（半坐臥位）。" },
+                    { id: "nf2", text: "檢查鼻胃管鼻翼刻度無移位，胸前鋪毛巾。" },
+                    { id: "nf3", text: "反折管路接空針反吸，評估胃消化殘量（【>100c.c. 暫緩 1 小時】）。" },
+                    { id: "nf4", text: "先倒 30c.c. 溫開水潤管，再倒配方奶靠重力自然流下。" },
+                    { id: "nf5", text: "灌食空針保持高出鼻孔 【30–45 公分】，時間 10–15 分鐘（【嚴禁用針心推壓】）。" },
+                    { id: "nf6", text: "最後倒 30–50c.c. 溫水沖管，反折扣緊管塞。" },
+                    { id: "nf7", text: "交代並維持抬高床頭 【30–60 分鐘】（防止嘔吐或吸入性肺炎）。" }
+                ],
+                speech: "指導講評：灌食殘量超過 100c.c. 要先暫緩，灌完一定要維持坐姿至少 30-60 分鐘！"
+            },
+            ngFix: {
+                title: "鼻胃管固定與清潔",
+                steps: [
+                    { id: "nx1", text: "洗手、說明，一手固定管路，小心撕除舊 3M 紙膠。" },
+                    { id: "nx2", text: "生理食鹽水棉棒清潔鼻翼油脂與管路沾黏物。" },
+                    { id: "nx3", text: "檢查管路刻度無移位，Y 型膠帶主幹貼鼻樑，兩長腳交叉纏繞管路。" },
+                    { id: "nx4", text: "換貼位置防止鼻翼壓傷，管路用安全別針+橡皮筋固定於衣服胸前。" }
+                ],
+                speech: "指導講評：撕膠帶時一定要一手扶著管路防止被拔出，貼膠位置要定期微調防壓傷。"
+            },
+            diaperChange: {
+                title: "更換尿片 (含王爺爺偏癱翻身照顧)",
+                steps: [
+                    { id: "dc1", text: "洗手、說明、拉圍簾，戴上【清潔手套】。" },
+                    { id: "dc2", text: "照顧者站在患側保護，將偏癱個案【轉向健側（左側）】。" },
+                    { id: "dc3", text: "髒尿片向內包，前向後擦拭陰部肛門，舊尿片捲至身下。" },
+                    { id: "dc4", text: "對齊脊椎鋪新尿片，轉回另一側取出舊尿片。" },
+                    { id: "dc5", text: "拉平黏緊，腰部預留 【1–2 指寬度】，【順向拉出腿部防漏邊】。" }
+                ],
+                speech: "指導講評：偏癱個案翻身要轉向健側（左側），換好尿片一定要把腿部防漏邊拉出來！"
+            }
+        };
+
+        // Exam Scenarios Assignment
+        const examConfigs = {
+            scenarioA: ["foleycathF", "perineal", "ngFeed", "ngFix", "glycerin"],
+            scenarioB: ["ngFeed", "ngFix", "perineal", "foleycathM", "diaperChange"],
+            random: ["foleycathF", "ngFeed", "glycerin"]
+        };
+
+        let currentExam = [];
+        let timerInterval = null;
+        let secondsRemaining = 720; // 12 minutes
+
+        function showScreen(screenId) {
+            document.getElementById('screen-home').classList.add('hidden');
+            document.getElementById('screen-exam').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+            document.getElementById('screen-' + screenId).classList.remove('hidden');
+            window.scrollTo(0, 0);
+        }
+
+        document.getElementById('btn-home').addEventListener('click', () => {
+            clearInterval(timerInterval);
+            showScreen('home');
+        });
+
+        function startExam(scenarioKey) {
+            currentExam = examConfigs[scenarioKey] || examConfigs.random;
+            
+            // Set Header Title
+            const titles = {
+                scenarioA: "情境 A 實戰模擬 (陳奶奶)",
+                scenarioB: "情境 B 實戰模擬 (王爺爺)",
+                random: "隨機抽題速測"
+            };
+            document.getElementById('exam-title').innerText = titles[scenarioKey];
+
+            // Render Questions
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+
+            currentExam.forEach((techKey, index) => {
+                const data = sopData[techKey];
+                let cardHtml = `
+                    <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
+                        <div class="font-bold text-sm text-blue-800 pb-2 border-b border-slate-100 flex justify-between items-center">
+                            <span>${index + 1}. ${data.title}</span>
+                            <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded">SOP 查檢</span>
+                        </div>
+                        <div class="mt-2.5 space-y-2">
+                `;
+
+                data.steps.forEach(step => {
+                    cardHtml += `
+                        <label class="flex items-start space-x-2.5 text-xs text-slate-700 bg-slate-50 p-2 rounded-lg border border-slate-100 active:bg-blue-50">
+                            <input type="checkbox" id="chk_${step.id}" class="mt-0.5 h-4 w-4 text-blue-600 rounded border-slate-300 focus:ring-blue-500">
+                            <span class="leading-relaxed">${step.text}</span>
+                        </label>
+                    `;
+                });
+
+                cardHtml += `
+                        </div>
+                        <div class="mt-3 bg-emerald-50 border border-emerald-200 p-2.5 rounded-lg text-xs text-emerald-800">
+                            ${data.speech}
+                        </div>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+
+            // Start Timer
+            secondsRemaining = 720; // 12 minutes
+            updateTimerDisplay();
+            clearInterval(timerInterval);
+
+            if (scenarioKey !== 'random') {
+                document.getElementById('timer-card').classList.remove('hidden');
+                timerInterval = setInterval(() => {
+                    secondsRemaining--;
+                    updateTimerDisplay();
+                    if (secondsRemaining <= 0) {
+                        clearInterval(timerInterval);
+                        alert("⏱️ 12 分鐘時間到！為您自動計算本次成績。");
+                        finishExam();
+                    }
+                }, 1000);
+            } else {
+                document.getElementById('timer-card').classList.add('hidden');
+            }
+
+            showScreen('exam');
+        }
+
+        function updateTimerDisplay() {
+            const mins = Math.floor(secondsRemaining / 60).toString().padStart(2, '0');
+            const secs = (secondsRemaining % 60).toString().padStart(2, '0');
+            document.getElementById('timer-display').innerText = `${mins}:${secs}`;
+        }
+
+        function finishExam() {
+            clearInterval(timerInterval);
+
+            let totalSteps = 0;
+            let checkedSteps = 0;
+            let missedListHtml = '';
+
+            currentExam.forEach(techKey => {
+                const data = sopData[techKey];
+                data.steps.forEach(step => {
+                    totalSteps++;
+                    const chk = document.getElementById(`chk_${step.id}`);
+                    if (chk && chk.checked) {
+                        checkedSteps++;
+                    } else {
+                        missedListHtml += `
+                            <div class="bg-red-50 border-l-2 border-red-500 p-2 text-xs text-red-800 rounded-r">
+                                ❌ <strong>${data.title}</strong>: ${step.text}
+                            </div>
+                        `;
+                    }
+                });
+            });
+
+            const score = Math.round((checkedSteps / totalSteps) * 100);
+            const timeSpentMins = Math.floor((720 - secondsRemaining) / 60);
+            const timeSpentSecs = (720 - secondsRemaining) % 60;
+
+            document.getElementById('score-text').innerText = `${score} 分`;
+            document.getElementById('res-completed').innerText = `${checkedSteps} / ${totalSteps}`;
+            document.getElementById('res-time').innerText = `${timeSpentMins} 分 ${timeSpentSecs} 秒`;
+
+            const statusBox = document.getElementById('score-status');
+            if (score >= 80) {
+                statusBox.className = "text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full inline-block mb-3";
+                statusBox.innerText = "🎉 恭喜高分通過長照核備！SOP非常熟練";
+            } else {
+                statusBox.className = "text-xs font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full inline-block mb-3";
+                statusBox.innerText = "⚠️ 尚未達標，請特別注意被扣分的防護與細節！";
+            }
+
+            const missedContainer = document.getElementById('missed-items-list');
+            if (missedListHtml === '') {
+                missedContainer.innerHTML = '<div class="text-emerald-600 font-bold p-2 text-center">🌟 太棒了！完美達成 100% 所有 SOP 細節！</div>';
+            } else {
+                missedContainer.innerHTML = missedListHtml;
+            }
+
+            showScreen('result');
+        }
+    </script>
+</body>
+</html>
